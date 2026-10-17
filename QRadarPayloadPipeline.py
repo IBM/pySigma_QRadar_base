@@ -5,8 +5,8 @@ from typing import Union, Optional
 from sigma.exceptions import SigmaTransformationError
 from sigma.processing.conditions import LogsourceCondition
 from sigma.processing.pipeline import ProcessingPipeline, ProcessingItem
-from sigma.processing.transformations import DetectionItemTransformation, \
-    DetectionItemFailureTransformation
+from sigma.processing.transformations import DetectionItemFailureTransformation
+from sigma.processing.transformations.base import DetectionItemTransformation
 from sigma.rule import SigmaDetectionItem, SigmaDetection
 from sigma.types import SigmaRegularExpression, SigmaNull, SigmaCompareExpression, \
     SigmaNumber, SigmaString, SigmaBool, SigmaCIDRExpression, SigmaExpansion

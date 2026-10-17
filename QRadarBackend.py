@@ -101,6 +101,17 @@ class QRadarBackend(TextQueryBackend):
     # implement custom methods for query elements not covered by the default backend base
     # Documentation: https://sigmahq-pysigma.readthedocs.io/en/latest/Backends.html
 
+    def escape_and_quote_field(self, field_name: str) -> str:
+        """
+        Do not quote a field name a second time if the field mapping transformation already
+        quoted it. The mapping is also applied to the fields of detection items in current
+        pySigma versions, so the quoted name reaches the backend and would be quoted twice.
+        """
+        quote = self.field_quote
+        if len(field_name) >= 2 and field_name.startswith(quote) and field_name.endswith(quote):
+            return field_name
+        return super().escape_and_quote_field(field_name)
+
     def convert_condition_not(
             self, cond: ConditionNOT, state: ConversionState
     ) -> Union[str, DeferredQueryExpression]:
