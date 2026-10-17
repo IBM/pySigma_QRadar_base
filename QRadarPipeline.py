@@ -42,8 +42,10 @@ class QRadarFieldMappingTransformation(FieldMappingTransformation):
     """
     field_quote_pattern: Pattern
 
-    def apply_field_name(self, field: str) -> Union[str, List[str]]:
-        mappings = copy.deepcopy(self.get_mapping(field)) or []
+    def apply_field_name(self, field: str) -> Optional[Union[str, List[str]]]:
+        mappings = copy.deepcopy(self.mapping.get(field))
+        if mappings is None:  # unmapped field: pass the field name through unchanged
+            return None
         if isinstance(mappings, str):
             mappings = [mappings]
         for i, mapping in enumerate(mappings):
@@ -103,7 +105,7 @@ class SetEventSourceTransformation(SetStateTransformation):
                     self.processing_item_applied(detection_item)
         return device_types
 
-    def apply(self, pipeline, rule: SigmaRule) -> None:
+    def apply(self, rule: SigmaRule) -> None:
         device_types = []
         for detection in rule.detection.detections.values():
             log_source = (
@@ -112,4 +114,4 @@ class SetEventSourceTransformation(SetStateTransformation):
             )
             device_types.extend(log_source)
         self.val = device_types
-        super().apply(pipeline, rule)
+        super().apply(rule)
